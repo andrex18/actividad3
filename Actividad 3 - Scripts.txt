@@ -1,0 +1,98 @@
+ABRIR CONSOLA NUEVA
+//////////////////////////////////////////////////
+
+cluster=new ShardingTest ({shards: 3, chunksize:1})
+
+//////////////////////////////////////////////////
+ABRIR OTRA CONSOLA NUEVA
+
+db = (new Mongo("AdrianaGiraldo:20006")).getDB("eventoDeportivo")
+ 
+
+for (i= 0; i < 80000; i++) {
+  db.Deportistas.insert({author : "author" +i, post_title : "Futbolistas de alto rendimiento "
+ +i, date: new Date() });
+}
+
+
+db.Jugadores.insertMany( [
+{id:1, nombre: 'Macnely Torres', equipo: 'A.Nacional', posicion: 'Delantero'},
+{id:2, nombre:'Jason Zapata', equipo: 'D. Pasto', posicion: 'Medio Campo'},
+{id:3, nombre: 'Antonio Belez', equipo: 'A. de Cali', posicion: 'Defensa'},
+{id:4, nombre:'Mario Benitez', equipo: 'D. Tolima', posicion: 'Portero'},
+{id:5, nombre: 'Camilo Vargas', equipo: 'Junior', posicion: 'Lateral'},
+{id:6, nombre:'Luis Diaz', equipo: 'Millonarios', posicion: 'Delantero'}
+]);
+
+
+db.Equipos.insertMany( [
+{id:1, nombre: 'D. Cali', titulos: '12'},
+{id:2, nombre:'A.Nacional', titulos: '22'},
+{id:3, nombre:'A. de Cali', titulos: '9'},
+{id:4, nombre:'Junior', titulos: '8'},
+{id:5, nombre:'Millonarios', titulos: '12'}
+]);
+
+db.Deportistas.count()
+db.Jugadores.count()
+db.Equipos.count()
+
+//////////////////////////////////////////////////
+ABRIR OTRA CONSOLA NUEVA
+
+shard1 = new Mongo("AdrianaGiraldo:20000")
+shard1DB = shard1.getDB("eventoDeportivo")
+shard1DB.Deportistas.count()
+shard2 = new Mongo("AdrianaGiraldo:20001")
+shard2DB = shard2.getDB("eventoDeportivo")
+shard2DB.Deportistas.count()
+shard3 = new Mongo("AdrianaGiraldo:20002")
+shard3DB = shard3.getDB("eventoDeportivo")
+shard3DB.Deportistas.count()
+
+
+shard1 = new Mongo("AdrianaGiraldo:20000")
+shard1DB = shard1.getDB("eventoDeportivo")
+shard1DB.Jugadores.count()
+shard2 = new Mongo("AdrianaGiraldo:20001")
+shard2DB = shard2.getDB("eventoDeportivo")
+shard2DB.Jugadores.count()
+shard3 = new Mongo("AdrianaGiraldo:20002")
+shard3DB = shard3.getDB("eventoDeportivo")
+shard3DB.Jugadores.count()
+
+shard1 = new Mongo("AdrianaGiraldo:20000")
+shard1DB = shard1.getDB("eventoDeportivo")
+shard1DB.Equipos.count()
+shard2 = new Mongo("AdrianaGiraldo:20001")
+shard2DB = shard2.getDB("eventoDeportivo")
+shard2DB.Equipos.count()
+shard3 = new Mongo("AdrianaGiraldo:20002")
+shard3DB = shard3.getDB("eventoDeportivo")
+shard3DB.Equipos.count()
+
+///////////////////////////////////////////////////////
+SE REALIZA EN LA SEGUNDA CONSOLA DONDE DICE mongos> PARA PODER EJECUTAR LOS COMANDOS
+
+shard1 = new Mongo("AdrianaGiraldo:20006")
+sh.status()
+
+sh.enableSharding("eventoDeportivo")
+
+db.Deportistas.ensureIndex({author : 1})
+
+sh.shardCollection("eventoDeportivo.Deportistas", {author: 1})
+
+sh.getBalancerState()
+
+sh.setBalancerState(true)
+
+sh.isBalancerRunning()
+
+////////////////////////////////////////////////////////////////////
+
+No ejecutar sin hacer los casos de prueba
+ cluster.stop()
+
+
+// actividad 3 jorge andres nuñez torres 
